@@ -1,0 +1,65 @@
+void showFilterDialog() => showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+          builder: (context, setState) => AlertDialog(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Filtro'),
+                IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(Icons.close_rounded),
+                ),
+              ],
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CheckboxListTile(
+                    controlAffinity: ListTileControlAffinity.leading,
+                    title: Text(allChecked.title),
+                    value: allChecked.value,
+                    onChanged: (value) {
+                      final newValue = !allChecked.value;
+
+                      setState(() {
+                        allChecked.value = newValue;
+
+                        checkBoxList
+                            .forEach((element) => element.value = newValue);
+                      });
+                    },
+                  ),
+                  const Divider(),
+                  ...checkBoxList
+                      .map(
+                        (item) => CheckboxListTile(
+                          controlAffinity: ListTileControlAffinity.leading,
+                          title: Text(item.title),
+                          value: item.value,
+                          onChanged: (value) {
+                            final newValue = !item.value;
+
+                            setState(() {
+                              item.value = newValue;
+
+                              if (!newValue) {
+                                allChecked.value = false;
+                              } else {
+                                final allChecked = checkBoxList
+                                    .every((element) => element.value);
+
+                                this.allChecked.value = allChecked;
+                              }
+                            });
+                          },
+                        ),
+                      )
+                      .toList(),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
